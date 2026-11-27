@@ -1,4 +1,4 @@
-# Typecheck, lint, format, tests with coverage thresholds, and a build.
+# Typecheck, lint, format, tests with coverage thresholds, a build, and conventional commits.
 name: ci
 
 on:
@@ -29,3 +29,40 @@ jobs:
           name: addon-zip
           path: dist/*.zip
           if-no-files-found: error
+
+  commits:
+    name: conventional commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: lint the commits
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            echo "No base to compare against, linting the last commit only"
+            pnpm exec commitlint --last
+          else
+            pnpm exec commitlint --from "$BASE" --to "$HEAD"
+          fi
+
+  pull-request-title:
+    name: conventional pull request title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

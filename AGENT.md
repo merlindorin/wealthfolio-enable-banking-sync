@@ -18,7 +18,6 @@ task lint             # eslint
 task format           # prettier --write
 task bundle           # build + zip into dist/, installable from Settings → Extensions
 task demo             # the real UI against fictional data, http://localhost:5199
-task release -- minor # bump versions, move the changelog, commit and tag (does not push)
 
 pnpm vitest run src/lib/bank.test.ts   # one file
 ```
@@ -32,13 +31,12 @@ src/pages/      one view per screen (overview, add bank, entries, settings)
 src/components/ dialogs and UI primitives
 src/styles.ts   one scoped stylesheet, injected by BankSyncApp (the host has no CSS for us)
 demo/           harness that renders BankSyncApp against a mocked AddonContext
-scripts/        release tooling (version bump, changelog, release notes)
 ```
 
 ## Conventions
 
 - **Test first.** Write the failing test in `src/lib`, watch it fail, then implement. UI components are thin and untested; push logic into `src/lib`.
-- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`, ...). Release commits are `chore(release): vX.Y.Z`.
+- Conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, ...), enforced by a commitlint hook and by CI. `feat` and `fix` decide the next version, so write them for the user, not for yourself.
 - No narrating comments. Comment only a non-obvious reason, such as an API constraint.
 - `src/lib/**` must stay free of `react` and of `@wealthfolio/addon-sdk` runtime imports (type imports are fine).
 
@@ -50,7 +48,7 @@ scripts/        release tooling (version bump, changelog, release notes)
 - **Dedup id.** `sourceRecordId` is the bank's `entry_reference`, else `transaction_id`, else a deterministic hash with an occurrence counter. The host stores it as `addon:enable-banking-sync:<id>`. The importer and the Entries view share `resolveEntry` so they always agree.
 - **Bank fields.** Some banks, Crédit Agricole among them, send no IBAN and no counterparty, only free text in `remittance_information`.
 - **Consent renewal** creates a new session with new account uids; `renewConnection` carries links over by IBAN, else by name.
-- **Versions** live in `package.json` and `manifest.json` and must match (`src/release.test.ts` checks it). Use `task release`, never edit them by hand.
+- **Versions and changelog** are owned by release-please. Never edit `version` in `package.json` or `manifest.json`, or `CHANGELOG.md`, by hand: merge the release PR it opens. `src/release.test.ts` checks that the two versions match.
 - Changing `manifest.json` permissions triggers a consent dialog at install; keep the set minimal. `src/release.test.ts` pins the host and the permission categories.
 
 ## Verifying a change in a real Wealthfolio

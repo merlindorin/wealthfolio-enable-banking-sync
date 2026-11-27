@@ -38,13 +38,3 @@ tasks:
   demo:
     desc: Run the addon against fictional data on http://localhost:5199
     cmd: pnpm demo
-
-  # ------------------------------------------------------------- release ----
-
-  release:
-    desc: 'Cut a release: task release -- patch|minor|major|x.y.z'
-    cmd: pnpm release {{.CLI_ARGS}}
-
-  release:notes:
-    desc: 'Print the changelog notes of a version: task release:notes -- 1.2.0'
-    cmd: node scripts/release-notes.mjs {{.CLI_ARGS}}
