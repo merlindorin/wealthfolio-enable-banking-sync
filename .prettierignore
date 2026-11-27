@@ -2,3 +2,7 @@ dist
 coverage
 node_modules
 pnpm-lock.yaml
+# written by release-please
+CHANGELOG.md
+manifest.json
+.release-please-manifest.json

@@ -49,8 +49,8 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
-            echo "No base to compare against, linting the last commit only"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "No usable base to compare against (first push, or history was rewritten), linting the last commit only"
             pnpm exec commitlint --last
           else
             pnpm exec commitlint --from "$BASE" --to "$HEAD"
