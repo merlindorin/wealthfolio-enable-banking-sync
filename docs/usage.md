@@ -60,16 +60,34 @@ neither spending nor income. The addon creates cash accounts when you ask it to.
 
 ## Settings
 
-| Setting           | Where        | Default     | What it does                                                                               |
-| ----------------- | ------------ | ----------- | ------------------------------------------------------------------------------------------ |
-| Auto sync         | Overview     | off         | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
-| Interval          | Overview     | 6 h         | 1, 6 or 24 hours                                                                           |
-| Sync this account | Edit account | on          | Pauses one account without unlinking it                                                    |
-| Bank color        | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
+| Setting             | Where        | Default     | What it does                                                                               |
+| ------------------- | ------------ | ----------- | ------------------------------------------------------------------------------------------ |
+| Auto sync           | Overview     | off         | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
+| Interval            | Overview     | 6 h         | 1, 6 or 24 hours                                                                           |
+| Sync this account   | Edit account | on          | Pauses one account without unlinking it                                                    |
+| Bank color          | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
+| Description rewrite | Settings     | no rule     | Find and replace in each transaction text before import                                    |
 
 Every sync asks the bank for its longest history; there is no date to choose and
 nothing to re-import. Entries already in Wealthfolio are skipped, so repeating a
 sync is safe. **Settings** only holds your Enable Banking credentials.
+
+## Rewrite descriptions
+
+**Settings → Description rewrite** cleans the text of new imports. Each rule is a
+regular expression (case-insensitive) and a replacement; leave the replacement
+empty to remove the match, or use `$1` to keep a captured part. Rules run top to
+bottom, and the preview shows the result on three examples.
+
+| Find                 | Replace with | Effect                      |
+| -------------------- | ------------ | --------------------------- |
+| `PAIEMENT PAR CARTE` |              | removes the label           |
+| `X\d{4}`             |              | removes the card suffix     |
+| `\d{2}/\d{2}`        |              | removes a date like `25/11` |
+
+It only applies to new imports: entries already in Wealthfolio keep their text.
+The bank's original text stays in the entry details, and the key used to skip
+duplicates does not change, so editing a rule never imports anything twice.
 
 ## Limits
 

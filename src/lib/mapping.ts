@@ -1,4 +1,5 @@
 import type { ActivityImport } from '@wealthfolio/addon-sdk';
+import { applyRewrites, type Rewrite } from './rewrite';
 
 export interface BankTransaction {
   entry_reference?: string | null;
@@ -37,7 +38,11 @@ export function resolveEntry(tx: BankTransaction, seen: Map<string, number>): Re
   return { date, isCredit, counterparty, remittance, id: sourceRecordId(tx, date, counterparty, remittance, seen) };
 }
 
-export function mapTransactions(accountId: string, transactions: BankTransaction[]): ActivityImport[] {
+export function mapTransactions(
+  accountId: string,
+  transactions: BankTransaction[],
+  rewrites: Rewrite[] = [],
+): ActivityImport[] {
   const seen = new Map<string, number>();
   const rows: ActivityImport[] = [];
 
@@ -52,7 +57,10 @@ export function mapTransactions(accountId: string, transactions: BankTransaction
       symbol: '',
       amount: Math.abs(Number(tx.transaction_amount.amount)),
       currency: tx.transaction_amount.currency,
-      comment: [entry.counterparty, entry.remittance].filter(Boolean).join(' — '),
+      comment: [entry.counterparty, entry.remittance]
+        .map((part) => applyRewrites(part, rewrites))
+        .filter(Boolean)
+        .join(' — '),
       sourceRecordId: entry.id,
       metadata: {
         source: 'enable-banking',

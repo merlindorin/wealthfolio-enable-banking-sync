@@ -1,3 +1,4 @@
+import type { ActivityImport } from '@wealthfolio/addon-sdk';
 import { describe, expect, it, vi } from 'vitest';
 import { syncConnection, type SyncDeps } from './sync';
 import type { Connection } from './state';
@@ -46,6 +47,18 @@ describe('syncConnection', () => {
 
     expect(d.getTransactions).toHaveBeenNthCalledWith(1, 'u1', { strategy: 'longest' });
     expect(d.getTransactions).toHaveBeenNthCalledWith(2, 'u1', { strategy: 'longest' });
+  });
+
+  it('rewrites the comment of imported rows with the rules of the deps', async () => {
+    const withText = { ...tx('a'), remittance_information: ['PAIEMENT X1234'] };
+    const checkImport = vi.fn(async (rows: ActivityImport[]) => rows);
+    const d = {
+      ...deps({ checkImport, getTransactions: vi.fn(async () => [withText, { ...withText, entry_reference: 'b' }]) }),
+      rewrites: [{ pattern: 'PAIEMENT X\\d+', replacement: 'renamed' }],
+    };
+    await syncConnection(connection, d);
+
+    expect(checkImport.mock.calls[0][0].map((r) => r.comment)).toEqual(['renamed', 'renamed']);
   });
 
   it('validates rows before importing and reports counts', async () => {

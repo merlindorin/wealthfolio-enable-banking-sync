@@ -1,13 +1,17 @@
+import { parseRewrites, type Rewrite } from './rewrite';
+
 const SETTINGS_KEY = 'eb-settings';
 
 export interface Settings {
   autoSync: boolean;
   intervalHours: number;
+  rewrites: Rewrite[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   autoSync: false,
   intervalHours: 6,
+  rewrites: [],
 };
 
 interface KeyValueStore {
@@ -23,6 +27,7 @@ export async function loadSettings(store: KeyValueStore): Promise<Settings> {
     return {
       autoSync: stored.autoSync ?? DEFAULT_SETTINGS.autoSync,
       intervalHours: stored.intervalHours ?? DEFAULT_SETTINGS.intervalHours,
+      rewrites: parseRewrites(stored.rewrites),
     };
   } catch {
     return DEFAULT_SETTINGS;

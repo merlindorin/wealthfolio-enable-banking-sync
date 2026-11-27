@@ -1,6 +1,7 @@
 import type { ActivityImport } from '@wealthfolio/addon-sdk';
 import { mapTransactions, type BankTransaction } from './mapping';
 import { TransactionsPeriodError, type TransactionsOptions } from './client';
+import type { Rewrite } from './rewrite';
 import type { Connection } from './state';
 
 export interface SyncDeps {
@@ -11,6 +12,7 @@ export interface SyncDeps {
   ): Promise<{ summary: { imported: number; duplicates: number; skipped: number } }>;
   today(): string;
   now?(): number;
+  rewrites?: Rewrite[];
 }
 
 export interface AccountReport {
@@ -54,7 +56,7 @@ export async function syncConnection(connection: Connection, deps: SyncDeps): Pr
     }
     try {
       const { transactions, limited } = await fetchLongestHistory(deps, account.uid);
-      const checked = await deps.checkImport(mapTransactions(account.accountId, transactions));
+      const checked = await deps.checkImport(mapTransactions(account.accountId, transactions, deps.rewrites));
       const { summary } = await deps.importActivities(checked);
 
       reports.push({

@@ -9,7 +9,7 @@ const memory = () => {
 describe('settings', () => {
   it('defaults to manual sync every 6 hours', async () => {
     expect(await loadSettings(memory())).toEqual(DEFAULT_SETTINGS);
-    expect(DEFAULT_SETTINGS).toEqual({ autoSync: false, intervalHours: 6 });
+    expect(DEFAULT_SETTINGS).toEqual({ autoSync: false, intervalHours: 6, rewrites: [] });
   });
 
   it('round-trips and merges stored values over defaults', async () => {
@@ -24,7 +24,17 @@ describe('settings', () => {
       'eb-settings',
       JSON.stringify({ autoSync: true, intervalHours: 1, historyDays: 365, longestHistory: true }),
     );
-    expect(await loadSettings(s)).toEqual({ autoSync: true, intervalHours: 1 });
+    expect(await loadSettings(s)).toEqual({ autoSync: true, intervalHours: 1, rewrites: [] });
+  });
+
+  it('stores the rewrite rules and ignores malformed ones', async () => {
+    const s = memory();
+    const rules = [{ pattern: 'CARTE X\\d+', replacement: '' }];
+    await saveSettings(s, { ...DEFAULT_SETTINGS, rewrites: rules });
+    expect((await loadSettings(s)).rewrites).toEqual(rules);
+
+    await s.set('eb-settings', JSON.stringify({ rewrites: [{ pattern: 'a', replacement: 'b' }, 42] }));
+    expect((await loadSettings(s)).rewrites).toEqual([{ pattern: 'a', replacement: 'b' }]);
   });
 
   it('falls back to defaults on corrupt data', async () => {

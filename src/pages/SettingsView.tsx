@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { BankSync } from '../hooks/useBankSync';
 import { Note } from '../components/ui';
 import { applicationIdFromFileName, normalizePrivateKey } from '../lib/pem';
+import { RewriteRulesCard } from '../components/RewriteRulesCard';
 
 export function SettingsView({ app }: { app: BankSync }) {
   const [appId, setAppId] = useState('');
@@ -24,7 +25,7 @@ export function SettingsView({ app }: { app: BankSync }) {
       <div className="ebs-row ebs-between">
         <div className="ebs-col" style={{ gap: 4 }}>
           <h1>Settings</h1>
-          <span className="ebs-muted">Your Enable Banking credentials.</span>
+          <span className="ebs-muted">Your Enable Banking credentials and how descriptions are rewritten.</span>
         </div>
         <button className="ebs-btn" onClick={() => app.setView('overview')}>
           Back to overview
@@ -94,6 +95,8 @@ export function SettingsView({ app }: { app: BankSync }) {
           only its content is stored.
         </span>
       </div>
+
+      <RewriteRulesCard rules={app.settings.rewrites} onSave={(rewrites) => app.updateSettings({ rewrites })} />
     </>
   );
 }

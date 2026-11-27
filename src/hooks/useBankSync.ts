@@ -311,7 +311,9 @@ export function useBankSync(ctx: AddonContext, search: string) {
     const account = connectionsRef.current.flatMap((c) => c.accounts).find((a) => a.uid === item.accountUid);
     if (!account?.accountId) return api.toast.error('Link this bank account to a Wealthfolio account first');
     try {
-      const checked = await api.activities.checkImport(mapTransactions(account.accountId, [item.raw]));
+      const checked = await api.activities.checkImport(
+        mapTransactions(account.accountId, [item.raw], settings.rewrites),
+      );
       const { summary } = await api.activities.import(checked);
       api.toast.success(summary.imported ? 'Entry imported' : 'Already in Wealthfolio');
     } catch (e) {
