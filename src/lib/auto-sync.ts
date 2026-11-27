@@ -31,7 +31,7 @@ export async function autoSyncIfDue({ storage, createSyncDeps, now, log }: AutoS
 
     for (const connection of connections) {
       try {
-        const result = await syncConnection(connection, syncDeps, settings);
+        const result = await syncConnection(connection, syncDeps);
         result.reports.forEach((r) => {
           totals.imported += r.imported ?? 0;
           totals.duplicates += r.duplicates ?? 0;

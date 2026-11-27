@@ -7,15 +7,24 @@ const memory = () => {
 };
 
 describe('settings', () => {
-  it('defaults to manual sync with no history override', async () => {
+  it('defaults to manual sync every 6 hours', async () => {
     expect(await loadSettings(memory())).toEqual(DEFAULT_SETTINGS);
-    expect(DEFAULT_SETTINGS).toMatchObject({ autoSync: false, longestHistory: false });
+    expect(DEFAULT_SETTINGS).toEqual({ autoSync: false, intervalHours: 6 });
   });
 
   it('round-trips and merges stored values over defaults', async () => {
     const s = memory();
     await saveSettings(s, { ...DEFAULT_SETTINGS, autoSync: true, intervalHours: 12 });
     expect(await loadSettings(s)).toMatchObject({ autoSync: true, intervalHours: 12 });
+  });
+
+  it('drops options that older versions stored', async () => {
+    const s = memory();
+    await s.set(
+      'eb-settings',
+      JSON.stringify({ autoSync: true, intervalHours: 1, historyDays: 365, longestHistory: true }),
+    );
+    expect(await loadSettings(s)).toEqual({ autoSync: true, intervalHours: 1 });
   });
 
   it('falls back to defaults on corrupt data', async () => {

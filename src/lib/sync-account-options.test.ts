@@ -32,14 +32,24 @@ describe('per-account sync options', () => {
     expect(result.reports.map((r) => r.uid)).toEqual(['on']);
   });
 
-  it('starts the first sync at the account import date, overriding the history setting', async () => {
+  it('starts the first sync at the account import date', async () => {
     const d = deps();
     await syncConnection(
       connection([{ uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03' }]),
       d,
-      { historyDays: 30, longestHistory: false },
     );
     expect(d.getTransactions).toHaveBeenCalledWith('u', { dateFrom: '2025-11-03' });
+  });
+
+  it('combines the import date with the longest history', async () => {
+    const d = deps();
+    await syncConnection(
+      connection([
+        { uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03', longestHistory: true },
+      ]),
+      d,
+    );
+    expect(d.getTransactions).toHaveBeenCalledWith('u', { dateFrom: '2025-11-03', strategy: 'longest' });
   });
 
   it('ignores the import date once the account was synced', async () => {

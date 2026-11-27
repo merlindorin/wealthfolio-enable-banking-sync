@@ -203,7 +203,7 @@ export function useBankSync(ctx: AddonContext, search: string) {
   const saveAccount = async (
     sessionId: string,
     uid: string,
-    patch: { accountId?: string; syncEnabled?: boolean; importFrom?: string },
+    patch: { accountId?: string; syncEnabled?: boolean; importFrom?: string; longestHistory?: boolean },
   ) => {
     try {
       let accountId = patch.accountId;
@@ -257,7 +257,7 @@ export function useBankSync(ctx: AddonContext, search: string) {
       for (const c of base.filter((x) => !scope.sessionId || x.sessionId === scope.sessionId)) {
         const subset = scope.uid ? { ...c, accounts: c.accounts.filter((a) => a.uid === scope.uid) } : c;
         try {
-          const result = await syncConnection(subset, deps, settings);
+          const result = await syncConnection(subset, deps);
           next = next.map((x) =>
             x.sessionId === c.sessionId
               ? { ...x, accounts: x.accounts.map((a) => result.updated.accounts.find((u) => u.uid === a.uid) ?? a) }
