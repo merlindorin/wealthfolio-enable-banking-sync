@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The sync activity log now shows the error message when an automatic sync fails, instead of only a count.
+
 ### Changed
 
 - Settings now only holds the Enable Banking credentials. Auto sync and its interval are on the overview, where they already were.
