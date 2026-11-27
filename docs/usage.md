@@ -67,10 +67,9 @@ neither spending nor income. The addon creates cash accounts when you ask it to.
 | Sync this account | Edit account | on          | Pauses one account without unlinking it                                                    |
 | Bank color        | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
 
-The first sync of an account, and **Re-import history**, always ask the bank for
-its longest history; there is no date to choose. Later syncs only re-read the
-last seven days. Re-importing is safe: entries already in Wealthfolio are
-skipped. **Settings** only holds your Enable Banking credentials.
+Every sync asks the bank for its longest history; there is no date to choose and
+nothing to re-import. Entries already in Wealthfolio are skipped, so repeating a
+sync is safe. **Settings** only holds your Enable Banking credentials.
 
 ## Limits
 

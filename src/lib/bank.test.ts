@@ -7,7 +7,6 @@ import {
   defaultBankColor,
   removeConnection,
   renewConnection,
-  resetAccountSync,
   setBankColor,
   syncLabel,
   timeAgo,
@@ -93,16 +92,6 @@ describe('timeAgo', () => {
     expect(timeAgo(now - 2 * 60_000, now)).toBe('2 min ago');
     expect(timeAgo(now - 3 * 3_600_000, now)).toBe('3 h ago');
     expect(timeAgo(now - 2 * 86_400_000, now)).toBe('2 d ago');
-  });
-});
-
-describe('resetAccountSync', () => {
-  it('clears the sync dates of one account only', () => {
-    const c = conn('a');
-    c.accounts[1] = { ...c.accounts[1], lastSyncedOn: '2026-11-21', lastSyncedAt: 5 };
-    const next = resetAccountSync([c], 'a', 'u1');
-    expect(next[0].accounts[0].lastSyncedOn).toBeUndefined();
-    expect(next[0].accounts[1].lastSyncedOn).toBe('2026-11-21');
   });
 });
 

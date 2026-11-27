@@ -54,8 +54,8 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
         Sync this account
       </label>
       <span className="ebs-small ebs-muted">
-        The first sync, and Re-import history, fetch as far back as the bank allows. Changing the linked account only
-        affects future imports: transactions already imported stay where they are.
+        Every sync fetches as far back as the bank allows. Changing the linked account only affects future imports:
+        transactions already imported stay where they are.
       </span>
 
       <div className="ebs-row ebs-between" style={{ borderTop: '1px solid var(--line)', paddingTop: 18 }}>

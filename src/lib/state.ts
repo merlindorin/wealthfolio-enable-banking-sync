@@ -44,10 +44,3 @@ export function linkAccount(connection: Connection, uid: string, accountId: stri
     accounts: connection.accounts.map((a) => (a.uid === uid ? { ...a, accountId } : a)),
   };
 }
-
-export function resetSyncDates(connection: Connection): Connection {
-  return {
-    ...connection,
-    accounts: connection.accounts.map(({ lastSyncedOn: _lastSyncedOn, ...account }) => account),
-  };
-}

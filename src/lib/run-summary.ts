@@ -9,14 +9,7 @@ export interface RunTotals {
 
 export function summarizeRun(kind: LogEntry['kind'], totals: RunTotals): Pick<LogEntry, 'ok' | 'title' | 'detail'> {
   const ok = totals.errors.length === 0;
-  const title =
-    kind === 'history'
-      ? ok
-        ? 'History re-imported'
-        : 'History re-import failed'
-      : ok
-        ? 'Manual sync'
-        : 'Manual sync failed';
+  const title = ok ? 'Manual sync' : 'Manual sync failed';
 
   if (!ok) return { ok, title, detail: totals.errors.join('; ') };
 

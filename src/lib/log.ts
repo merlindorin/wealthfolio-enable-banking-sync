@@ -3,7 +3,7 @@ const MAX_ENTRIES = 20;
 
 export interface LogEntry {
   at: number;
-  kind: 'auto' | 'manual' | 'history' | 'bank';
+  kind: 'auto' | 'manual' | 'bank';
   ok: boolean;
   title: string;
   detail: string;

@@ -8,12 +8,6 @@ export const SyncIcon = ({ color = 'currentColor' }: { color?: string }) => (
   </svg>
 );
 
-export const HistoryIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-    <path d="M3 10a7 7 0 1 0 2.1-5L3 7M3 3v4h4M10 6v4l3 2" stroke="currentColor" {...stroke} />
-  </svg>
-);
-
 const PENCIL = 'M2.5 13.5l.7-3L10.6 3.1a1.4 1.4 0 0 1 2 0l.3.3a1.4 1.4 0 0 1 0 2L5.5 12.8l-3 .7Z';
 
 export const PencilIcon = () => (

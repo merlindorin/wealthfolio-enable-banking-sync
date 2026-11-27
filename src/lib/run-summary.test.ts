@@ -12,14 +12,10 @@ describe('summarizeRun', () => {
     });
   });
 
-  it('describes a clean history re-import', () => {
-    expect(summarizeRun('history', totals)).toMatchObject({ ok: true, title: 'History re-imported' });
-  });
-
   it('says so in the title when it failed, and lists the errors', () => {
-    expect(summarizeRun('history', { ...totals, errors: ['a', 'b'] })).toEqual({
+    expect(summarizeRun('manual', { ...totals, errors: ['a', 'b'] })).toEqual({
       ok: false,
-      title: 'History re-import failed',
+      title: 'Manual sync failed',
       detail: 'a; b',
     });
     expect(summarizeRun('manual', { ...totals, errors: ['x'] })).toMatchObject({
@@ -29,7 +25,7 @@ describe('summarizeRun', () => {
   });
 
   it('tells when the bank limited how far back it went', () => {
-    expect(summarizeRun('history', { ...totals, limited: true }).detail).toBe(
+    expect(summarizeRun('manual', { ...totals, limited: true }).detail).toBe(
       '3 new, 40 already known. The bank limits how far back it goes, so the oldest entries were not fetched.',
     );
   });

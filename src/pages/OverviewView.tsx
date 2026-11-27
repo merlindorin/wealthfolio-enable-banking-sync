@@ -1,7 +1,7 @@
 import { bankInitials, consentTone, daysLeft, defaultBankColor, syncLabel, timeAgo } from '../lib/bank';
 import { minutesUntilNextSync } from '../lib/log';
 import type { BankSync } from '../hooks/useBankSync';
-import { Avatar, HistoryIcon, IconButton, PencilIcon, Switch, SyncIcon } from '../components/ui';
+import { Avatar, IconButton, PencilIcon, Switch, SyncIcon } from '../components/ui';
 
 const INTERVALS = [1, 6, 24];
 const CONSENT_SPAN_DAYS = 90;
@@ -171,13 +171,6 @@ export function OverviewView({ app }: { app: BankSync }) {
                       onClick={() => app.sync({ sessionId: c.sessionId, uid: a.uid }, 'manual')}
                     >
                       <SyncIcon color="#fffcf0" />
-                    </IconButton>
-                    <IconButton
-                      label="Re-import history (duplicates are skipped)"
-                      disabled={app.busy !== null || !a.accountId}
-                      onClick={() => app.reimport(c.sessionId, a.uid)}
-                    >
-                      <HistoryIcon />
                     </IconButton>
                     <IconButton
                       label="Edit this account"

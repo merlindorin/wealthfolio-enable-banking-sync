@@ -3,14 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { buildAccountPayload } from '../lib/accounts';
 import { createClient, createSyncDeps } from '../lib/api-deps';
 import { parseCallback } from '../lib/auth-callback';
-import {
-  defaultBankColor,
-  removeConnection,
-  renewConnection,
-  resetAccountSync,
-  setBankColor,
-  updateAccount,
-} from '../lib/bank';
+import { defaultBankColor, removeConnection, renewConnection, setBankColor, updateAccount } from '../lib/bank';
 import type { Aspsp } from '../lib/client';
 import { consentValidUntil } from '../lib/consent';
 import { importedRefs, toEntryRows, type EntryRow } from '../lib/entries';
@@ -286,9 +279,6 @@ export function useBankSync(ctx: AddonContext, search: string) {
     }
   };
 
-  const reimport = (sessionId: string, uid: string) =>
-    sync({ sessionId, uid }, 'history', resetAccountSync(connectionsRef.current, sessionId, uid));
-
   const fetchEntries = useCallback(
     async (days: number): Promise<EntryItem[]> => {
       const client = await createClient(api);
@@ -358,7 +348,6 @@ export function useBankSync(ctx: AddonContext, search: string) {
     setColor,
     removeBank,
     sync,
-    reimport,
     fetchEntries,
     importEntry,
     warningFor,

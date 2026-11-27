@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadConnections, saveConnections, linkAccount, resetSyncDates, type Connection } from './state';
+import { loadConnections, saveConnections, linkAccount, type Connection } from './state';
 
 const memory = () => {
   const m = new Map<string, string>();
@@ -31,11 +31,5 @@ describe('connection state', () => {
     const next = linkAccount(conn, 'u1', 'wf-9');
     expect(next.accounts[0].accountId).toBe('wf-9');
     expect(conn.accounts[0].accountId).toBeUndefined();
-  });
-
-  it('resets sync dates so the next sync uses the history settings', () => {
-    const synced = { ...conn, accounts: [{ ...conn.accounts[0], lastSyncedOn: '2026-11-27' }] };
-    expect(resetSyncDates(synced).accounts[0].lastSyncedOn).toBeUndefined();
-    expect(synced.accounts[0].lastSyncedOn).toBe('2026-11-27');
   });
 });

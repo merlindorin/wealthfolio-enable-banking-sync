@@ -49,19 +49,6 @@ export function timeAgo(timestamp: number | undefined, now: number): string {
   return `${Math.floor(seconds / 86_400)} d ago`;
 }
 
-export function resetAccountSync(connections: Connection[], sessionId: string, uid: string): Connection[] {
-  return connections.map((c) =>
-    c.sessionId === sessionId
-      ? {
-          ...c,
-          accounts: c.accounts.map((a) =>
-            a.uid === uid ? { ...a, lastSyncedOn: undefined, lastSyncedAt: undefined } : a,
-          ),
-        }
-      : c,
-  );
-}
-
 const CARRIED = ['accountId', 'syncEnabled', 'lastSyncedOn', 'lastSyncedAt'] as const;
 
 export function renewConnection(connections: Connection[], fresh: Connection): Connection[] {
