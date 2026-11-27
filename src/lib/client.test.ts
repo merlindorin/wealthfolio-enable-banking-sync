@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { EnableBankingClient, type NetworkLike } from './client';
+import { EnableBankingClient, TransactionsPeriodError, type NetworkLike } from './client';
 
 const json = (body: unknown, status = 200) => ({ status, headers: {}, body: JSON.stringify(body) });
 
@@ -86,5 +86,23 @@ describe('EnableBankingClient', () => {
     const request = vi.fn().mockResolvedValue(json({ transactions: [], continuation_key: 'same' }));
     const client = new EnableBankingClient({ request }, 's');
     await expect(client.getTransactions('a', {})).rejects.toThrow(/pages/);
+  });
+
+  it('raises a dedicated error when the bank refuses the requested period', async () => {
+    const { client } = setup([
+      json({ message: 'Wrong transactions period requested', error: 'WRONG_TRANSACTIONS_PERIOD' }, 422),
+    ]);
+
+    await expect(client.getTransactions('acc-1', { dateFrom: '2026-07-01' })).rejects.toBeInstanceOf(
+      TransactionsPeriodError,
+    );
+  });
+
+  it('keeps a generic error for other 422 responses', async () => {
+    const { client } = setup([json({ message: 'Invalid account', error: 'INVALID_ACCOUNT' }, 422)]);
+
+    const error = await client.getTransactions('acc-1', {}).catch((e) => e);
+    expect(error).toBeInstanceOf(Error);
+    expect(error).not.toBeInstanceOf(TransactionsPeriodError);
   });
 });

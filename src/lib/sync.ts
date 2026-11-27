@@ -1,6 +1,6 @@
 import type { ActivityImport } from '@wealthfolio/addon-sdk';
 import { mapTransactions, type BankTransaction } from './mapping';
-import type { TransactionsOptions } from './client';
+import { TransactionsPeriodError, type TransactionsOptions } from './client';
 import type { Connection } from './state';
 
 const OVERLAP_DAYS = 7;
@@ -21,12 +21,29 @@ export interface AccountReport {
   fetched?: number;
   imported?: number;
   duplicates?: number;
+  limited?: boolean;
   error?: string;
 }
 
 export interface SyncResult {
   updated: Connection;
   reports: AccountReport[];
+}
+
+async function fetchWithFallback(deps: SyncDeps, uid: string, options: TransactionsOptions) {
+  const attempts: TransactionsOptions[] = [options];
+  if (options.dateFrom && options.strategy !== 'longest')
+    attempts.push({ dateFrom: options.dateFrom, strategy: 'longest' });
+  attempts.push({});
+
+  for (const [index, attempt] of attempts.entries()) {
+    try {
+      return { transactions: await deps.getTransactions(uid, attempt), limited: index > 0 };
+    } catch (error) {
+      if (!(error instanceof TransactionsPeriodError) || index === attempts.length - 1) throw error;
+    }
+  }
+  throw new Error('unreachable');
 }
 
 const daysBefore = (date: string, days: number) =>
@@ -52,7 +69,7 @@ export async function syncConnection(connection: Connection, deps: SyncDeps): Pr
       const options: TransactionsOptions = account.lastSyncedOn
         ? { dateFrom: daysBefore(account.lastSyncedOn, OVERLAP_DAYS) }
         : { dateFrom: account.importFrom, ...(account.longestHistory && { strategy: 'longest' as const }) };
-      const transactions = await deps.getTransactions(account.uid, options);
+      const { transactions, limited } = await fetchWithFallback(deps, account.uid, options);
       const checked = await deps.checkImport(mapTransactions(account.accountId, transactions));
       const { summary } = await deps.importActivities(checked);
 
@@ -61,6 +78,7 @@ export async function syncConnection(connection: Connection, deps: SyncDeps): Pr
         fetched: transactions.length,
         imported: summary.imported,
         duplicates: summary.duplicates,
+        ...(limited && { limited }),
       });
       accounts.push({ ...account, lastSyncedOn: today, lastSyncedAt: (deps.now ?? Date.now)() });
     } catch (error) {

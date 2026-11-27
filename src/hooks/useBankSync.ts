@@ -15,6 +15,7 @@ import type { Aspsp } from '../lib/client';
 import { consentValidUntil } from '../lib/consent';
 import { importedRefs, toEntryRows, type EntryRow } from '../lib/entries';
 import { appendLog, loadLog, type LogEntry } from '../lib/log';
+import { summarizeRun } from '../lib/run-summary';
 import { mapTransactions } from '../lib/mapping';
 import { consumePending, savePending } from '../lib/pending';
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, type Settings } from '../lib/settings';
@@ -252,6 +253,7 @@ export function useBankSync(ctx: AddonContext, search: string) {
       let next = base;
       let imported = 0;
       let duplicates = 0;
+      let limited = false;
       const errors: string[] = [];
 
       for (const c of base.filter((x) => !scope.sessionId || x.sessionId === scope.sessionId)) {
@@ -266,6 +268,7 @@ export function useBankSync(ctx: AddonContext, search: string) {
           result.reports.forEach((r) => {
             imported += r.imported ?? 0;
             duplicates += r.duplicates ?? 0;
+            limited ||= r.limited === true;
             if (r.error) errors.push(r.error);
           });
         } catch (e) {
@@ -274,16 +277,11 @@ export function useBankSync(ctx: AddonContext, search: string) {
       }
 
       await persist(next);
-      await appendLog(api.storage, {
-        at: Date.now(),
-        kind,
-        ok: errors.length === 0,
-        title: kind === 'history' ? 'History re-imported' : 'Manual sync',
-        detail: errors.length ? errors.join('; ') : `${imported} new, ${duplicates} already known`,
-      });
+      const summary = summarizeRun(kind, { imported, duplicates, limited, errors });
+      await appendLog(api.storage, { at: Date.now(), kind, ...summary });
       setLog(await loadLog(api.storage));
       if (errors.length) api.toast.error(errors.join('; '));
-      else api.toast.success(`Imported ${imported} new transactions`);
+      else api.toast.success(limited ? `${summary.detail}` : `Imported ${imported} new transactions`);
       await loadStats(next);
     } catch (e) {
       fail(e);

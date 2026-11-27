@@ -89,7 +89,8 @@ Wealthfolio are skipped. **Settings** only holds your Enable Banking credentials
   amounts. Crédit Agricole is one of them.
 - **How much history you get** is the bank's decision and varies a lot. Some
   banks only go back about 90 days unless you re-authenticate, others go back
-  more than a year. Ask for the longest in Settings and see what comes back.
+  more than a year. Turn on "Fetch as far back as the bank allows" in the account's edit dialog and see what comes back.
+  If the bank refuses the start date you asked for (`Wrong transactions period requested`), the addon retries with the longest period the bank allows, then with the bank's own default, and the sync log says the history was limited.
 - **Tested on** a self-hosted Wealthfolio 3.13 in the browser. The desktop app
   has no public address for the bank to return to, so the redirect flow does not
   apply there.

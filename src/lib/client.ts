@@ -48,6 +48,13 @@ export interface StartAuthOptions {
   validUntil: Date;
 }
 
+export class TransactionsPeriodError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'TransactionsPeriodError';
+  }
+}
+
 export class EnableBankingClient {
   constructor(
     private readonly network: NetworkLike,
@@ -106,7 +113,10 @@ export class EnableBankingClient {
     });
 
     if (response.status < 200 || response.status >= 300) {
-      throw new Error(`Enable Banking ${method} ${path} failed (${response.status}): ${errorMessage(response.body)}`);
+      const message = `Enable Banking ${method} ${path} failed (${response.status}): ${errorMessage(response.body)}`;
+      throw response.status === 422 && /transactions period/i.test(response.body)
+        ? new TransactionsPeriodError(message)
+        : new Error(message);
     }
     return JSON.parse(response.body) as R;
   }
