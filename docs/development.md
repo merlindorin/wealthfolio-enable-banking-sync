@@ -16,13 +16,25 @@ The logic lives in `src/lib`, free of React and of the host, and is where the te
 
 Changes follow [Conventional Commits](https://www.conventionalcommits.org/) and tests come first.
 
-## Releasing
+## Commits
 
-```sh
-task release -- minor     # or patch, major, or an explicit x.y.z
-git push origin main --follow-tags
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/), and that is enforced: a `commit-msg` hook runs [commitlint](https://commitlint.js.org) as soon as you install the dependencies, and CI lints every pushed commit and the title of every pull request.
+
+```
+feat: add a thing          → minor release
+fix: correct a thing       → patch release
+feat!: change a thing      → major release (or a BREAKING CHANGE: footer)
+docs, refactor, perf       → listed in the changelog
+chore, ci, test, build     → no release on their own
 ```
 
-`task release` refuses to run on a dirty tree or off `main`, moves the `Unreleased` notes of [CHANGELOG.md](../CHANGELOG.md) under the new version, bumps `package.json` and `manifest.json` together, runs every check, then commits and tags `vX.Y.Z`.
+## Releasing
 
-Pushing the tag starts the `release` workflow. It checks the tag against the package version, rebuilds, and publishes a GitHub release with the zip, a `SHA256SUMS` file and the changelog section as notes.
+Releases are automated with [release-please](https://github.com/googleapis/release-please). Nothing to run by hand.
+
+1. Commits land on `main`.
+2. release-please opens, and keeps up to date, a pull request titled `chore(main): release X.Y.Z`. It holds the new version in `package.json` and `manifest.json` and the new `CHANGELOG.md` section, all computed from the commits since the last release.
+3. Merge that pull request when you want to ship. release-please tags `vX.Y.Z` and creates the GitHub release.
+4. The same workflow then builds the addon and attaches the zip and a `SHA256SUMS` file to the release.
+
+Pull requests opened with the default Actions token do not trigger other workflows, so the release PR gets no CI run by default. To have CI run on it, create a personal access token with `repo` scope and store it as the `RELEASE_PLEASE_TOKEN` repository secret.

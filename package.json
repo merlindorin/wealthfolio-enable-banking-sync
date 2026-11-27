@@ -26,8 +26,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "pnpm type-check && pnpm lint && pnpm format:check && pnpm test:coverage && pnpm build",
-    "release": "node scripts/release.mjs",
-    "demo": "vite demo --port 5199"
+    "demo": "vite demo --port 5199",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.90.0",
@@ -40,6 +40,8 @@
     "recharts": "^3.7.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/react-query": "^5.90.20",
@@ -55,6 +57,7 @@
     "eslint": "^10.16.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.14.0",
+    "husky": "^9.1.7",
     "lucide-react": "^1.70.0",
     "prettier": "^3.10.1",
     "react": "^19.2.4",
