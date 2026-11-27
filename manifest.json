@@ -1,7 +1,7 @@
 {
   "id": "enable-banking-sync",
   "name": "Enable Banking Sync",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Sync bank transactions from any bank supported by Enable Banking into Wealthfolio cash accounts",
   "author": "merlindorin",
   "main": "dist/addon.js",
