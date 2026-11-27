@@ -80,7 +80,7 @@ Open **Bank Sync → Add a bank**:
 4. The addon lists the accounts your bank shared. For each one, **link it to a Wealthfolio account**, or create a new cash account.
 5. If you created accounts, turn on **Spending** for them in Wealthfolio under Settings → Suivi des dépenses, otherwise their activities show under Investments. The addon warns you when an account is not tracked.
 
-The first sync starts when you press **Sync** on an account, or on the next automatic sync. See the [README](../README.md#how-transactions-are-imported) for what gets imported.
+The first sync starts when you press **Sync** on an account, or on the next automatic sync. See the [usage guide](usage.md#how-transactions-are-imported) for what gets imported.
 
 ## 7. Sandbox or real banks
 
