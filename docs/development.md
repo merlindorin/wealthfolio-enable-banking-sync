@@ -34,7 +34,7 @@ Releases are automated with [release-please](https://github.com/googleapis/relea
 
 1. Commits land on `main`.
 2. release-please opens, and keeps up to date, a pull request titled `chore(main): release X.Y.Z`. It holds the new version in `package.json` and `manifest.json` and the new `CHANGELOG.md` section, all computed from the commits since the last release.
-3. Ship it by adding the **`release`** label to that pull request, or merge it yourself. Either way release-please tags `vX.Y.Z` and creates the GitHub release. The label only works on release-please's own PR.
+3. Merge that pull request when you want to ship. release-please tags `vX.Y.Z` and creates the GitHub release.
 4. The same workflow then builds the addon and attaches the zip and a `SHA256SUMS` file to the release.
 
-Pull requests opened with the default Actions token do not trigger other workflows, so the release PR gets no CI run by default. To have CI run on it, create a personal access token with `repo` scope and store it as the `RELEASE_PLEASE_TOKEN` repository secret.
+A pull request opened with the default Actions token does not run CI by itself, or waits for a manual approval. So the `release-please` workflow starts CI on the release branch each time it updates the PR, and the checks appear on the PR without any approval. If you would rather have a normal pull request run, store a personal access token with `repo` scope as the `RELEASE_PLEASE_TOKEN` repository secret.
