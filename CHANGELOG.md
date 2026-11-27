@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/merlindorin/wealthfolio-enable-banking-sync/compare/v1.3.0...v1.4.0) (2026-11-27)
+
+
+### Features
+
+* rewrite transaction descriptions with find and replace rules ([78df6c7](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/78df6c7390edb1eab93ac3bd1ab5d0f04d8b05c4))
+
+
+### Changes
+
+* remove Re-import history, every sync already imports everything ([f49c95c](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/f49c95c2ecd4ecc6f5843d5d98a93402a794a1a7))
+
 ## [1.3.0](https://github.com/merlindorin/wealthfolio-enable-banking-sync/compare/v1.2.1...v1.3.0) (2026-11-27)
 
 
