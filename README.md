@@ -73,7 +73,7 @@ You need Wealthfolio 3.13 or newer, served over HTTPS (see
 an Enable Banking application. The [Enable Banking guide](docs/enable-banking.md)
 walks through the second one, step by step.
 
-**1.** Download `wealthfolio-enable-banking-sync-addon-<version>.zip` from the
+**1.** Download `wealthfolio-enable-banking-sync-<version>.zip` from the
 [latest release](../../releases/latest), or build it yourself:
 
 ```sh
