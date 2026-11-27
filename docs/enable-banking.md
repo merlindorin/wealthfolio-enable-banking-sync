@@ -31,16 +31,14 @@ Press **Register**. Your browser saves a file named after the application id, fo
 
 ## 3. Check the private key
 
-The addon signs its requests with Web Crypto, which only reads **PKCS#8** keys. Look at the first line of the file:
+Nothing to convert. The addon accepts the key as a **`.pem` file or as pasted text**, in either format:
 
-```sh
-head -1 aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.pem
-```
+| First line                        | What happens                        |
+| --------------------------------- | ----------------------------------- |
+| `-----BEGIN PRIVATE KEY-----`     | Used as is.                         |
+| `-----BEGIN RSA PRIVATE KEY-----` | Converted for you when you save it. |
 
-| First line                        | What to do                                                                 |
-| --------------------------------- | -------------------------------------------------------------------------- |
-| `-----BEGIN PRIVATE KEY-----`     | Nothing, it is PKCS#8.                                                     |
-| `-----BEGIN RSA PRIVATE KEY-----` | Convert it: `openssl pkcs8 -topk8 -nocrypt -in key.pem -out key-pkcs8.pem` |
+Two things it will refuse, with a message that says why: a **certificate** (`BEGIN CERTIFICATE`), which is not the private key, and a key **encrypted with a passphrase**.
 
 ## 4. Whitelist the redirect URL
 
@@ -60,13 +58,13 @@ Open **Bank Sync → Settings** in Wealthfolio and fill in the credentials card:
 
 ![The settings screen with the credentials form](img/settings.png)
 
-| Field          | Value                                                                       |
-| -------------- | --------------------------------------------------------------------------- |
-| Application ID | The id from step 2                                                          |
-| Private key    | The whole content of the `.pem` file, including the `BEGIN` and `END` lines |
-| Redirect URL   | The URL from step 4, exactly as whitelisted                                 |
+| Field          | Value                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| Application ID | The id from step 2                                                                        |
+| Private key    | Choose the `.pem` file, or paste its whole content, including the `BEGIN` and `END` lines |
+| Redirect URL   | The URL from step 4, exactly as whitelisted                                               |
 
-Press **Save credentials**. The key goes into Wealthfolio's secrets vault and is never shown again, which is why the form is empty afterwards and the title only gains a ✓.
+Choosing the file also fills the application id, because Enable Banking names the file after it. The form tells you whether the key is valid before you save. Press **Save credentials**. The key goes into Wealthfolio's secrets vault and is never shown again, which is why the form is empty afterwards and the title only gains a ✓.
 
 ## 6. Connect a bank
 
@@ -98,7 +96,8 @@ Open banking consents expire. The addon asks each bank for the longest consent i
 
 | What you see                                              | What it means                                                                                                         |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `Private key must be a PKCS#8 PEM`                        | The key starts with `BEGIN RSA PRIVATE KEY`. Convert it, see [step 3](#3-check-the-private-key).                      |
+| `This is a certificate, not the private key`              | You picked the wrong file. Use the `.pem` downloaded when you registered the application.                             |
+| `This key is encrypted with a passphrase`                 | Remove the passphrase from the key first, then use it here.                                                           |
 | `Enable Banking credentials are not configured`           | Application id or key is missing. Save them in Settings.                                                              |
 | `... failed (401)`                                        | The id and the key do not match, or the key was regenerated. Use the id that matches the `.pem` file name.            |
 | The bank page says the redirect URL is not allowed        | The redirect URL in the addon is not exactly one of the whitelisted URLs, including the scheme and the trailing path. |
