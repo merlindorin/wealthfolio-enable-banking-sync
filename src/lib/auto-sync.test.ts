@@ -88,4 +88,15 @@ describe('autoSyncIfDue', () => {
     const log = JSON.parse(store.get('eb-sync-log')!);
     expect(log[0]).toMatchObject({ kind: 'auto', ok: true, title: 'Auto sync', detail: '1 new, 4 already known' });
   });
+
+  it('puts the error messages in the log entry so a failure can be diagnosed', async () => {
+    const { deps, store, syncDeps } = setup();
+    syncDeps.getTransactions.mockRejectedValue(new Error('Enable Banking GET /accounts failed (429): rate limited'));
+
+    await autoSyncIfDue(deps);
+
+    const [entry] = JSON.parse(store.get('eb-sync-log')!);
+    expect(entry.ok).toBe(false);
+    expect(entry.detail).toContain('rate limited');
+  });
 });

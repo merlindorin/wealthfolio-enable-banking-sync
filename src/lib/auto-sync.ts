@@ -27,7 +27,7 @@ export async function autoSyncIfDue({ storage, createSyncDeps, now, log }: AutoS
     const syncDeps = await createSyncDeps();
     const connections = await loadConnections(storage);
     const updated = [];
-    const totals = { imported: 0, duplicates: 0, errors: 0 };
+    const totals = { imported: 0, duplicates: 0, errors: [] as string[] };
 
     for (const connection of connections) {
       try {
@@ -36,14 +36,15 @@ export async function autoSyncIfDue({ storage, createSyncDeps, now, log }: AutoS
           totals.imported += r.imported ?? 0;
           totals.duplicates += r.duplicates ?? 0;
           if (r.error) {
-            totals.errors++;
+            totals.errors.push(`${connection.aspsp.name}: ${r.error}`);
             log(`Auto sync failed for ${connection.aspsp.name}: ${r.error}`);
           }
         });
         updated.push(result.updated);
       } catch (error) {
-        totals.errors++;
-        log(`Auto sync skipped ${connection.aspsp.name}: ${error instanceof Error ? error.message : error}`);
+        const reason = error instanceof Error ? error.message : String(error);
+        totals.errors.push(reason);
+        log(`Auto sync skipped ${connection.aspsp.name}: ${reason}`);
         updated.push(connection);
       }
     }
@@ -53,10 +54,10 @@ export async function autoSyncIfDue({ storage, createSyncDeps, now, log }: AutoS
     await appendLog(storage, {
       at: now(),
       kind: 'auto',
-      ok: totals.errors === 0,
+      ok: totals.errors.length === 0,
       title: 'Auto sync',
-      detail: totals.errors
-        ? `${totals.errors} error(s), ${totals.imported} new`
+      detail: totals.errors.length
+        ? `${totals.errors.join('; ')} (${totals.imported} new)`
         : `${totals.imported} new, ${totals.duplicates} already known`,
     });
     return true;
