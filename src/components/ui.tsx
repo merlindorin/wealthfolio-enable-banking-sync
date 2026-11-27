@@ -103,6 +103,6 @@ export function Modal({ label, onClose, children }: { label: string; onClose: ()
   );
 }
 
-export const Note = ({ tone, children }: { tone: 'ok' | 'warn' | 'info'; children: ReactNode }) => (
+export const Note = ({ tone, children }: { tone: 'ok' | 'warn' | 'info' | 'bad'; children: ReactNode }) => (
   <div className={`ebs-note ebs-${tone}`}>{children}</div>
 );
