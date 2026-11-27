@@ -1,0 +1,71 @@
+{
+  "id": "enable-banking-sync",
+  "name": "Enable Banking Sync",
+  "version": "1.1.2",
+  "description": "Sync bank transactions from any bank supported by Enable Banking into Wealthfolio cash accounts",
+  "author": "merlindorin",
+  "main": "dist/addon.js",
+  "sdkVersion": "3.13.1",
+  "minWealthfolioVersion": "3.13.0",
+  "enabled": true,
+  "contributes": {
+    "routes": [
+      {
+        "id": "enable-banking-sync"
+      }
+    ],
+    "links": {
+      "sidebar": [
+        {
+          "id": "enable-banking-sync",
+          "route": "enable-banking-sync",
+          "label": "Bank Sync",
+          "icon": "bank",
+          "order": 100
+        }
+      ]
+    }
+  },
+  "hostDependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wealthfolio/addon-sdk": "^3.13.1",
+    "@wealthfolio/ui": "^3.13.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^1.70.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.7.0"
+  },
+  "permissions": [
+    {
+      "category": "accounts",
+      "functions": ["getAll", "create"],
+      "purpose": "Link bank accounts to Wealthfolio cash accounts"
+    },
+    {
+      "category": "activities",
+      "functions": ["getAll", "checkImport", "import"],
+      "purpose": "Import bank transactions and compare them with what is already in Wealthfolio"
+    },
+    {
+      "category": "secrets",
+      "functions": ["get", "set", "use"],
+      "purpose": "Store the Enable Banking application key and signed token"
+    },
+    {
+      "category": "network",
+      "functions": ["request"],
+      "purpose": "Call the Enable Banking API"
+    },
+    {
+      "category": "spending",
+      "functions": ["getContext"],
+      "purpose": "Warn when a linked account is not tracked by Spending"
+    }
+  ],
+  "keywords": ["wealthfolio", "addon"],
+  "license": "MIT",
+  "network": {
+    "allowedHosts": ["api.enablebanking.com"]
+  }
+}

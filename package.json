@@ -1,0 +1,82 @@
+{
+  "name": "wealthfolio-enable-banking-sync",
+  "version": "1.1.2",
+  "description": "Wealthfolio addon that syncs bank transactions from any bank supported by Enable Banking",
+  "type": "module",
+  "main": "dist/addon.js",
+  "keywords": [
+    "wealthfolio",
+    "addon",
+    "enable-banking",
+    "open-banking",
+    "psd2"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "dev:server": "wealthfolio-addon dev",
+    "clean": "rm -rf dist",
+    "package": "mkdir -p dist assets && find dist -name '*.map' -delete && zip -r dist/$npm_package_name-$npm_package_version.zip manifest.json dist/ assets/ README.md -x '*.map'",
+    "bundle": "pnpm clean && pnpm build && pnpm package",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm type-check && pnpm lint && pnpm format:check && pnpm test:coverage && pnpm build",
+    "release": "node scripts/release.mjs",
+    "demo": "vite demo --port 5199"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wealthfolio/addon-sdk": "^3.13.1",
+    "@wealthfolio/ui": "^3.13.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^1.70.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.7.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.1.13",
+    "@tanstack/react-query": "^5.90.20",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.2",
+    "@vitest/coverage-v8": "^5.1.2",
+    "@wealthfolio/addon-dev-tools": "^3.13.1",
+    "@wealthfolio/addon-sdk": "^3.13.1",
+    "@wealthfolio/ui": "^3.13.1",
+    "date-fns": "^4.1.0",
+    "eslint": "^10.16.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "lucide-react": "^1.70.0",
+    "prettier": "^3.10.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.7.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.74.0",
+    "vite": "^7.1.5",
+    "vitest": "^5.1.2"
+  },
+  "author": "merlindorin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/merlindorin/wealthfolio-enable-banking-sync.git"
+  },
+  "homepage": "https://github.com/merlindorin/wealthfolio-enable-banking-sync#readme",
+  "bugs": {
+    "url": "https://github.com/merlindorin/wealthfolio-enable-banking-sync/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@8.15.6"
+}
