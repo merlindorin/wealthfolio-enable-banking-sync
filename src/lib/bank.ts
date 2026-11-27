@@ -22,7 +22,7 @@ export function updateAccount(
   connections: Connection[],
   sessionId: string,
   uid: string,
-  patch: Partial<Pick<LinkedAccount, 'accountId' | 'syncEnabled' | 'importFrom' | 'longestHistory'>>,
+  patch: Partial<Pick<LinkedAccount, 'accountId' | 'syncEnabled'>>,
 ): Connection[] {
   return connections.map((c) =>
     c.sessionId === sessionId ? { ...c, accounts: c.accounts.map((a) => (a.uid === uid ? { ...a, ...patch } : a)) } : c,
@@ -62,7 +62,7 @@ export function resetAccountSync(connections: Connection[], sessionId: string, u
   );
 }
 
-const CARRIED = ['accountId', 'importFrom', 'syncEnabled', 'longestHistory', 'lastSyncedOn', 'lastSyncedAt'] as const;
+const CARRIED = ['accountId', 'syncEnabled', 'lastSyncedOn', 'lastSyncedAt'] as const;
 
 export function renewConnection(connections: Connection[], fresh: Connection): Connection[] {
   const index = connections.findIndex(

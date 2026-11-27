@@ -60,18 +60,17 @@ neither spending nor income. The addon creates cash accounts when you ask it to.
 
 ## Settings
 
-| Setting                        | Where        | Default     | What it does                                                                               |
-| ------------------------------ | ------------ | ----------- | ------------------------------------------------------------------------------------------ |
-| Auto sync                      | Overview     | off         | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
-| Interval                       | Overview     | 6 h         | 1, 6 or 24 hours                                                                           |
-| Import from                    | Edit account | none        | A date for this account's first sync                                                       |
-| As far back as the bank allows | Edit account | off         | Asks the bank for its longest history on this account's first sync                         |
-| Sync this account              | Edit account | on          | Pauses one account without unlinking it                                                    |
-| Bank color                     | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
+| Setting           | Where        | Default     | What it does                                                                               |
+| ----------------- | ------------ | ----------- | ------------------------------------------------------------------------------------------ |
+| Auto sync         | Overview     | off         | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
+| Interval          | Overview     | 6 h         | 1, 6 or 24 hours                                                                           |
+| Sync this account | Edit account | on          | Pauses one account without unlinking it                                                    |
+| Bank color        | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
 
-The import date and the history option apply to an account that was never
-synced, or after **Re-import history**. Re-importing is safe: entries already in
-Wealthfolio are skipped. **Settings** only holds your Enable Banking credentials.
+The first sync of an account, and **Re-import history**, always ask the bank for
+its longest history; there is no date to choose. Later syncs only re-read the
+last seven days. Re-importing is safe: entries already in Wealthfolio are
+skipped. **Settings** only holds your Enable Banking credentials.
 
 ## Limits
 
@@ -89,8 +88,8 @@ Wealthfolio are skipped. **Settings** only holds your Enable Banking credentials
   amounts. Crédit Agricole is one of them.
 - **How much history you get** is the bank's decision and varies a lot. Some
   banks only go back about 90 days unless you re-authenticate, others go back
-  more than a year. Turn on "Fetch as far back as the bank allows" in the account's edit dialog and see what comes back.
-  If the bank refuses the start date you asked for (`Wrong transactions period requested`), the addon retries with the longest period the bank allows, then with the bank's own default, and the sync log says the history was limited.
+  more than a year. The addon always asks for the longest, and uses whatever the bank returns.
+  If the bank refuses a requested period (`Wrong transactions period requested`), the addon retries with the longest period the bank allows, then with the bank's own default, and the sync log says the history was limited.
 - **Tested on** a self-hosted Wealthfolio 3.13 in the browser. The desktop app
   has no public address for the bank to return to, so the redirect flow does not
   apply there.

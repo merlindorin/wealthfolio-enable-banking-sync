@@ -6,9 +6,7 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
   const connection = app.connections.find((c) => c.sessionId === sessionId);
   const account = connection?.accounts.find((a) => a.uid === uid);
   const [target, setTarget] = useState(account?.accountId ?? '');
-  const [importFrom, setImportFrom] = useState(account?.importFrom ?? '');
   const [syncEnabled, setSyncEnabled] = useState(account?.syncEnabled !== false);
-  const [longestHistory, setLongestHistory] = useState(account?.longestHistory === true);
   if (!connection || !account) return null;
 
   const close = () => app.setDialog(null);
@@ -16,11 +14,7 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
   const others = connection.accounts.length - 1;
 
   const save = async () => {
-    await app.saveAccount(sessionId, uid, {
-      accountId: target || undefined,
-      syncEnabled,
-      importFrom: importFrom || undefined,
-    });
+    await app.saveAccount(sessionId, uid, { accountId: target || undefined, syncEnabled });
     close();
   };
 
@@ -58,23 +52,13 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
         <Note tone="ok">Spending tracking is on for this account.</Note>
       )}
 
-      <div className="ebs-row" style={{ alignItems: 'flex-end', gap: 14 }}>
-        <label className="ebs-col" style={{ flex: '1 1 200px' }}>
-          <span className="ebs-label">Import from</span>
-          <input className="ebs-input" type="date" value={importFrom} onChange={(e) => setImportFrom(e.target.value)} />
-        </label>
-        <label className="ebs-row" style={{ flex: '1 1 200px', gap: 12 }}>
-          <Switch on={syncEnabled} label="Sync this account" onChange={setSyncEnabled} />
-          Sync this account
-        </label>
-      </div>
       <label className="ebs-row" style={{ gap: 12 }}>
-        <Switch on={longestHistory} label="As far back as the bank allows" onChange={setLongestHistory} />
-        Fetch as far back as the bank allows
+        <Switch on={syncEnabled} label="Sync this account" onChange={setSyncEnabled} />
+        Sync this account
       </label>
       <span className="ebs-small ebs-muted">
-        The import date and the history option only apply to the first sync, or after Re-import history. Changing the
-        linked account only affects future imports: transactions already imported stay where they are.
+        The first sync, and Re-import history, fetch as far back as the bank allows. Changing the linked account only
+        affects future imports: transactions already imported stay where they are.
       </span>
 
       <div className="ebs-row ebs-between" style={{ borderTop: '1px solid var(--line)', paddingTop: 18 }}>

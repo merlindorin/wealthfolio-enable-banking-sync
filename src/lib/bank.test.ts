@@ -55,15 +55,11 @@ describe('updateAccount', () => {
     const next = updateAccount(list, 'a', 'u2', {
       accountId: 'wf-2',
       syncEnabled: false,
-      importFrom: '2025-11-03',
-      longestHistory: true,
     });
 
     expect(next[0].accounts[1]).toMatchObject({
       accountId: 'wf-2',
       syncEnabled: false,
-      importFrom: '2025-11-03',
-      longestHistory: true,
     });
     expect(next[0].accounts[0].accountId).toBe('wf-1');
     expect(list[0].accounts[1].accountId).toBeUndefined();
@@ -123,7 +119,6 @@ describe('renewConnection', () => {
         currency: 'EUR',
         iban: 'FR76A',
         accountId: 'wf-1',
-        importFrom: '2025-11-03',
         syncEnabled: false,
         lastSyncedOn: '2026-11-26',
         lastSyncedAt: 9,
@@ -153,7 +148,6 @@ describe('renewConnection', () => {
     const courant = merged.accounts.find((a) => a.uid === 'n1')!;
     expect(courant).toMatchObject({
       accountId: 'wf-1',
-      importFrom: '2025-11-03',
       syncEnabled: false,
       lastSyncedOn: '2026-11-26',
       lastSyncedAt: 9,

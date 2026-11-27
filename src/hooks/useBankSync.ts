@@ -201,11 +201,7 @@ export function useBankSync(ctx: AddonContext, search: string) {
     }
   };
 
-  const saveAccount = async (
-    sessionId: string,
-    uid: string,
-    patch: { accountId?: string; syncEnabled?: boolean; importFrom?: string; longestHistory?: boolean },
-  ) => {
+  const saveAccount = async (sessionId: string, uid: string, patch: { accountId?: string; syncEnabled?: boolean }) => {
     try {
       let accountId = patch.accountId;
       if (accountId === 'new') {

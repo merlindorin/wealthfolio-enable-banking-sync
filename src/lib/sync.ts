@@ -3,9 +3,6 @@ import { mapTransactions, type BankTransaction } from './mapping';
 import { TransactionsPeriodError, type TransactionsOptions } from './client';
 import type { Connection } from './state';
 
-const OVERLAP_DAYS = 7;
-const DAY_MS = 86_400_000;
-
 export interface SyncDeps {
   getTransactions(uid: string, options: TransactionsOptions): Promise<BankTransaction[]>;
   checkImport(rows: ActivityImport[]): Promise<ActivityImport[]>;
@@ -30,24 +27,14 @@ export interface SyncResult {
   reports: AccountReport[];
 }
 
-async function fetchWithFallback(deps: SyncDeps, uid: string, options: TransactionsOptions) {
-  const attempts: TransactionsOptions[] = [options];
-  if (options.dateFrom && options.strategy !== 'longest')
-    attempts.push({ dateFrom: options.dateFrom, strategy: 'longest' });
-  attempts.push({});
-
-  for (const [index, attempt] of attempts.entries()) {
-    try {
-      return { transactions: await deps.getTransactions(uid, attempt), limited: index > 0 };
-    } catch (error) {
-      if (!(error instanceof TransactionsPeriodError) || index === attempts.length - 1) throw error;
-    }
+async function fetchLongestHistory(deps: SyncDeps, uid: string) {
+  try {
+    return { transactions: await deps.getTransactions(uid, { strategy: 'longest' }), limited: false };
+  } catch (error) {
+    if (!(error instanceof TransactionsPeriodError)) throw error;
+    return { transactions: await deps.getTransactions(uid, {}), limited: true };
   }
-  throw new Error('unreachable');
 }
-
-const daysBefore = (date: string, days: number) =>
-  new Date(Date.parse(date) - days * DAY_MS).toISOString().slice(0, 10);
 
 export async function syncConnection(connection: Connection, deps: SyncDeps): Promise<SyncResult> {
   const today = deps.today();
@@ -66,10 +53,7 @@ export async function syncConnection(connection: Connection, deps: SyncDeps): Pr
       continue;
     }
     try {
-      const options: TransactionsOptions = account.lastSyncedOn
-        ? { dateFrom: daysBefore(account.lastSyncedOn, OVERLAP_DAYS) }
-        : { dateFrom: account.importFrom, ...(account.longestHistory && { strategy: 'longest' as const }) };
-      const { transactions, limited } = await fetchWithFallback(deps, account.uid, options);
+      const { transactions, limited } = await fetchLongestHistory(deps, account.uid);
       const checked = await deps.checkImport(mapTransactions(account.accountId, transactions));
       const { summary } = await deps.importActivities(checked);
 

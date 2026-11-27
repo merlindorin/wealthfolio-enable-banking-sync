@@ -30,36 +30,22 @@ function deps(overrides: Partial<SyncDeps> = {}): SyncDeps {
 }
 
 describe('syncConnection', () => {
-  it('imports only linked accounts, starting a week before the last sync', async () => {
+  it('imports only linked accounts', async () => {
     const d = deps();
     await syncConnection(connection, d);
 
     expect(d.getTransactions).toHaveBeenCalledTimes(1);
-    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: '2026-11-13' });
+    expect(d.getTransactions).toHaveBeenCalledWith('u1', expect.anything());
   });
 
-  it('fetches the full history window on the first sync', async () => {
+  it('always asks the bank for its longest history, on the first sync and on every later one', async () => {
     const d = deps();
     const fresh = { ...connection, accounts: [{ ...connection.accounts[0], lastSyncedOn: undefined }] };
     await syncConnection(fresh, d);
-    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: undefined });
-  });
+    await syncConnection(connection, d);
 
-  it('asks the bank for the longest history on the first sync of an account set to it', async () => {
-    const d = deps();
-    const fresh = {
-      ...connection,
-      accounts: [{ ...connection.accounts[0], lastSyncedOn: undefined, longestHistory: true }],
-    };
-    await syncConnection(fresh, d);
-    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: undefined, strategy: 'longest' });
-  });
-
-  it('uses the incremental window once synced, even for an account set to the longest history', async () => {
-    const d = deps();
-    const synced = { ...connection, accounts: [{ ...connection.accounts[0], longestHistory: true }] };
-    await syncConnection(synced, d);
-    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: '2026-11-13' });
+    expect(d.getTransactions).toHaveBeenNthCalledWith(1, 'u1', { strategy: 'longest' });
+    expect(d.getTransactions).toHaveBeenNthCalledWith(2, 'u1', { strategy: 'longest' });
   });
 
   it('validates rows before importing and reports counts', async () => {

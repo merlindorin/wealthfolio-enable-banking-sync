@@ -32,35 +32,11 @@ describe('per-account sync options', () => {
     expect(result.reports.map((r) => r.uid)).toEqual(['on']);
   });
 
-  it('starts the first sync at the account import date', async () => {
+  it('ignores an import date saved by an older version', async () => {
     const d = deps();
-    await syncConnection(
-      connection([{ uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03' }]),
-      d,
-    );
-    expect(d.getTransactions).toHaveBeenCalledWith('u', { dateFrom: '2025-11-03' });
-  });
-
-  it('combines the import date with the longest history', async () => {
-    const d = deps();
-    await syncConnection(
-      connection([
-        { uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03', longestHistory: true },
-      ]),
-      d,
-    );
-    expect(d.getTransactions).toHaveBeenCalledWith('u', { dateFrom: '2025-11-03', strategy: 'longest' });
-  });
-
-  it('ignores the import date once the account was synced', async () => {
-    const d = deps();
-    await syncConnection(
-      connection([
-        { uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03', lastSyncedOn: '2026-11-20' },
-      ]),
-      d,
-    );
-    expect(d.getTransactions).toHaveBeenCalledWith('u', { dateFrom: '2026-11-13' });
+    const legacy = { uid: 'u', name: 'A', currency: 'EUR', accountId: 'wf', importFrom: '2025-11-03' };
+    await syncConnection(connection([legacy]), d);
+    expect(d.getTransactions).toHaveBeenCalledWith('u', { strategy: 'longest' });
   });
 
   it('records when each synced account was last synced', async () => {
