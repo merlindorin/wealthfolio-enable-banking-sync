@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.1](https://github.com/merlindorin/wealthfolio-enable-banking-sync/compare/v1.2.0...v1.2.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* fall back to a shorter period when the bank refuses the requested one ([3d6ad2a](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/3d6ad2a6d80c31839c7d8490231c69efa4fae0be))
+* remove the close button from the modals ([c5c4d48](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/c5c4d48206244c43fca46b4490cd3159e41c2db4))
+
+
+### Changes
+
+* always fetch the bank's full history on every sync ([37c73be](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/37c73be50855ff2c4959f8c6d30df902b1a0a8be))
+
+
+### Documentation
+
+* remove screenshots that no page uses ([4e1ef3f](https://github.com/merlindorin/wealthfolio-enable-banking-sync/commit/4e1ef3f3b711170069e9d87bfc89a8a3384cc48f))
+
 ## [1.2.0](https://github.com/merlindorin/wealthfolio-enable-banking-sync/compare/v1.1.2...v1.2.0) (2026-11-27)
 
 
