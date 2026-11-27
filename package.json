@@ -1,6 +1,6 @@
 {
   "name": "wealthfolio-enable-banking-sync",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Wealthfolio addon that syncs bank transactions from any bank supported by Enable Banking",
   "type": "module",
   "main": "dist/addon.js",
