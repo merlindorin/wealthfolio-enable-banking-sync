@@ -45,16 +45,20 @@ describe('syncConnection', () => {
     expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: undefined });
   });
 
-  it('limits the first sync to the configured history and honours the longest strategy', async () => {
+  it('asks the bank for the longest history on the first sync of an account set to it', async () => {
     const d = deps();
-    const fresh = { ...connection, accounts: [{ ...connection.accounts[0], lastSyncedOn: undefined }] };
-    await syncConnection(fresh, d, { historyDays: 365, longestHistory: true });
-    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: '2025-11-27', strategy: 'longest' });
+    const fresh = {
+      ...connection,
+      accounts: [{ ...connection.accounts[0], lastSyncedOn: undefined, longestHistory: true }],
+    };
+    await syncConnection(fresh, d);
+    expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: undefined, strategy: 'longest' });
   });
 
-  it('uses the incremental window and default strategy once synced, regardless of history settings', async () => {
+  it('uses the incremental window once synced, even for an account set to the longest history', async () => {
     const d = deps();
-    await syncConnection(connection, d, { historyDays: 365, longestHistory: true });
+    const synced = { ...connection, accounts: [{ ...connection.accounts[0], longestHistory: true }] };
+    await syncConnection(synced, d);
     expect(d.getTransactions).toHaveBeenCalledWith('u1', { dateFrom: '2026-11-13' });
   });
 

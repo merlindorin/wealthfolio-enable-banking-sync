@@ -8,6 +8,7 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
   const [target, setTarget] = useState(account?.accountId ?? '');
   const [importFrom, setImportFrom] = useState(account?.importFrom ?? '');
   const [syncEnabled, setSyncEnabled] = useState(account?.syncEnabled !== false);
+  const [longestHistory, setLongestHistory] = useState(account?.longestHistory === true);
   if (!connection || !account) return null;
 
   const close = () => app.setDialog(null);
@@ -67,9 +68,13 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
           Sync this account
         </label>
       </div>
+      <label className="ebs-row" style={{ gap: 12 }}>
+        <Switch on={longestHistory} label="As far back as the bank allows" onChange={setLongestHistory} />
+        Fetch as far back as the bank allows
+      </label>
       <span className="ebs-small ebs-muted">
-        Changing the linked account only affects future imports. Transactions already imported stay where they are. The
-        import date only applies until the first sync.
+        The import date and the history option only apply to the first sync, or after Re-import history. Changing the
+        linked account only affects future imports: transactions already imported stay where they are.
       </span>
 
       <div className="ebs-row ebs-between" style={{ borderTop: '1px solid var(--line)', paddingTop: 18 }}>

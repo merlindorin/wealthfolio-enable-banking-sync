@@ -10,6 +10,7 @@ export interface LinkedAccount {
   lastSyncedAt?: number;
   syncEnabled?: boolean;
   importFrom?: string;
+  longestHistory?: boolean;
 }
 
 export interface Connection {

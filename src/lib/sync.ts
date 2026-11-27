@@ -1,7 +1,6 @@
 import type { ActivityImport } from '@wealthfolio/addon-sdk';
 import { mapTransactions, type BankTransaction } from './mapping';
 import type { TransactionsOptions } from './client';
-import type { Settings } from './settings';
 import type { Connection } from './state';
 
 const OVERLAP_DAYS = 7;
@@ -33,11 +32,7 @@ export interface SyncResult {
 const daysBefore = (date: string, days: number) =>
   new Date(Date.parse(date) - days * DAY_MS).toISOString().slice(0, 10);
 
-export async function syncConnection(
-  connection: Connection,
-  deps: SyncDeps,
-  settings: Pick<Settings, 'historyDays' | 'longestHistory'> = { historyDays: null, longestHistory: false },
-): Promise<SyncResult> {
+export async function syncConnection(connection: Connection, deps: SyncDeps): Promise<SyncResult> {
   const today = deps.today();
   if (Date.parse(connection.validUntil) < Date.parse(today)) {
     throw new Error(
@@ -56,11 +51,7 @@ export async function syncConnection(
     try {
       const options: TransactionsOptions = account.lastSyncedOn
         ? { dateFrom: daysBefore(account.lastSyncedOn, OVERLAP_DAYS) }
-        : {
-            dateFrom:
-              account.importFrom ?? (settings.historyDays ? daysBefore(today, settings.historyDays) : undefined),
-            ...(settings.longestHistory && { strategy: 'longest' as const }),
-          };
+        : { dateFrom: account.importFrom, ...(account.longestHistory && { strategy: 'longest' as const }) };
       const transactions = await deps.getTransactions(account.uid, options);
       const checked = await deps.checkImport(mapTransactions(account.accountId, transactions));
       const { summary } = await deps.importActivities(checked);

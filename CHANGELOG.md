@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Settings now only holds the Enable Banking credentials. Auto sync and its interval are on the overview, where they already were.
+- "First sync history (days)" and "Fetch the longest history" are no longer global. The first sync of an account starts at its own "Import from" date, and a new per-account switch asks the bank for as far back as it allows.
+
 ## [1.1.2] - 2026-11-27
 
 First public release.

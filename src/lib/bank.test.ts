@@ -52,9 +52,19 @@ describe('colors', () => {
 describe('updateAccount', () => {
   it('patches one bank account and leaves the others and the input untouched', () => {
     const list = [conn('a')];
-    const next = updateAccount(list, 'a', 'u2', { accountId: 'wf-2', syncEnabled: false, importFrom: '2025-11-03' });
+    const next = updateAccount(list, 'a', 'u2', {
+      accountId: 'wf-2',
+      syncEnabled: false,
+      importFrom: '2025-11-03',
+      longestHistory: true,
+    });
 
-    expect(next[0].accounts[1]).toMatchObject({ accountId: 'wf-2', syncEnabled: false, importFrom: '2025-11-03' });
+    expect(next[0].accounts[1]).toMatchObject({
+      accountId: 'wf-2',
+      syncEnabled: false,
+      importFrom: '2025-11-03',
+      longestHistory: true,
+    });
     expect(next[0].accounts[0].accountId).toBe('wf-1');
     expect(list[0].accounts[1].accountId).toBeUndefined();
   });

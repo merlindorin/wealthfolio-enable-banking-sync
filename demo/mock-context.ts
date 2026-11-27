@@ -121,10 +121,7 @@ export async function createDemoContext({ empty = false } = {}): Promise<AddonCo
       ],
     };
     storage.set('eb-connections', JSON.stringify([connection]));
-    storage.set(
-      'eb-settings',
-      JSON.stringify({ autoSync: true, intervalHours: 1, historyDays: 365, longestHistory: true }),
-    );
+    storage.set('eb-settings', JSON.stringify({ autoSync: true, intervalHours: 1 }));
     storage.set('eb-last-auto-sync', String(Date.now() - 26 * 60_000));
     storage.set(
       'eb-sync-log',

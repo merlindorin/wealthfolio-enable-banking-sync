@@ -60,18 +60,18 @@ neither spending nor income. The addon creates cash accounts when you ask it to.
 
 ## Settings
 
-| Setting            | Where              | Default            | What it does                                                                               |
-| ------------------ | ------------------ | ------------------ | ------------------------------------------------------------------------------------------ |
-| Auto sync          | Overview, Settings | off                | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
-| Interval           | Overview, Settings | 6 h                | 1, 6 or 24 hours, or any number of hours in Settings                                       |
-| First sync history | Settings           | the bank's default | How many days back the first sync of an account goes                                       |
-| Longest history    | Settings           | off                | Asks the bank for as far back as it allows on the first sync                               |
-| Import from        | Edit account       | none               | A date for this account's first sync. Takes precedence over the two above                  |
-| Sync this account  | Edit account       | on                 | Pauses one account without unlinking it                                                    |
-| Bank color         | Manage bank        | by position        | The dot that marks a bank in the overview                                                  |
+| Setting                        | Where        | Default     | What it does                                                                               |
+| ------------------------------ | ------------ | ----------- | ------------------------------------------------------------------------------------------ |
+| Auto sync                      | Overview     | off         | Syncs every linked account on a timer, **only while Wealthfolio is open in a browser tab** |
+| Interval                       | Overview     | 6 h         | 1, 6 or 24 hours                                                                           |
+| Import from                    | Edit account | none        | A date for this account's first sync                                                       |
+| As far back as the bank allows | Edit account | off         | Asks the bank for its longest history on this account's first sync                         |
+| Sync this account              | Edit account | on          | Pauses one account without unlinking it                                                    |
+| Bank color                     | Manage bank  | by position | The dot that marks a bank in the overview                                                  |
 
-History options apply to accounts that were never synced, or after **Re-import
-history**. Re-importing is safe: entries already in Wealthfolio are skipped.
+The import date and the history option apply to an account that was never
+synced, or after **Re-import history**. Re-importing is safe: entries already in
+Wealthfolio are skipped. **Settings** only holds your Enable Banking credentials.
 
 ## Limits
 
