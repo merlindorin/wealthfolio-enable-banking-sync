@@ -1,0 +1,31 @@
+# Typecheck, lint, format, tests with coverage thresholds, and a build.
+name: ci
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - name: bundle
+        run: pnpm bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: addon-zip
+          path: dist/*.zip
+          if-no-files-found: error
