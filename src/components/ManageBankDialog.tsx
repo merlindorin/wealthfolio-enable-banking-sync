@@ -32,9 +32,6 @@ export function ManageBankDialog({ app, sessionId }: { app: BankSync; sessionId:
             </span>
           </div>
         </div>
-        <button className="ebs-btn" aria-label="Close" onClick={close}>
-          ×
-        </button>
       </div>
 
       <div className="ebs-card" style={{ padding: 16, gap: 10 }}>

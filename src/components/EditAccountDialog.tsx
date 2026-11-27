@@ -27,9 +27,6 @@ export function EditAccountDialog({ app, sessionId, uid }: { app: BankSync; sess
             {account.currency} · these settings apply to this account only, from the next sync
           </span>
         </div>
-        <button className="ebs-btn" aria-label="Close" onClick={close}>
-          ×
-        </button>
       </div>
 
       <label className="ebs-col">
